@@ -1,0 +1,21 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+@addressId = 348
+
+GET https://localhost:7077/api/Address
+###
+GET https://localhost:7077/api/Address/{{addressId}}
+###
+POST https://localhost:7077/api/Address
+Content-Type application/json
+
+{
+  "countryCode": "CZ",
+  "county": "Plzeòi",
+  "city": "Plzen"
+}
+###
+DELETE https://localhost:7077/api/Address/{{addressId}}
+
+###
+
+GET https://zr4jwc3b-7077.euw.devtunnels.ms/api/address
