@@ -13,7 +13,7 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "katifiserver",
       "applicationUrl": "http://localhost:5222",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
@@ -23,7 +23,7 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "swagger",
       "applicationUrl": "https://localhost:7077;http://localhost:5222",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
@@ -32,7 +32,16 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "katifiserver",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "devtunnel": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "https://zr4jwc3b-7077.euw.devtunnels.ms",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
