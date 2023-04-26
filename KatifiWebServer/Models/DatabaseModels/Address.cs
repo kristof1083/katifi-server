@@ -30,7 +30,7 @@ public class Address : IEntityBase
 
 
     //Relations
-    public List<User> Users { get; set; }
+    public List<AppUser> Users { get; set; }
     public List<Community> Communities { get; set; }
     public Church Church { get; set; }
 }

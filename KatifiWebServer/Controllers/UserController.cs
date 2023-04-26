@@ -23,7 +23,7 @@ namespace KatifiWebServer.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
         {
-            var users = await _service.GetAllAsync(u => u.Address, u => u.Role);
+            var users = await _service.GetAllAsync(u => u.Address);
             var userdtos = _mapper.Map<IEnumerable<UserDTO>>(users);
 
             return Ok(userdtos);
@@ -32,7 +32,7 @@ namespace KatifiWebServer.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDTO>> GetUser(int id)
         {
-            var user = await _service.GetByIdAsync(id, u => u.Address, u=>u.Role);
+            var user = await _service.GetByIdAsync(id, u => u.Address);
 
             if (user == null)
             {
@@ -45,7 +45,7 @@ namespace KatifiWebServer.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<UserDTO>> PutUser(int id, UserDTO userdto)
         {
-            var user = _mapper.Map<User>(userdto);
+            var user = _mapper.Map<AppUser>(userdto);
             if (id != user.Id || !await _service.MeetsTheConstraints(user))
             {
                 return BadRequest();
@@ -58,7 +58,7 @@ namespace KatifiWebServer.Controllers
         [HttpPost]
         public async Task<ActionResult<UserDTO>> PostUser(UserDTO userdto)
         {
-            var user = _mapper.Map<User>(userdto);
+            var user = _mapper.Map<AppUser>(userdto);
             if (!await _service.MeetsTheConstraints(user))
             {
                 return BadRequest();
