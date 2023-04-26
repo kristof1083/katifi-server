@@ -1,15 +1,18 @@
 ﻿using KatifiWebServer.Data.Enums;
 using KatifiWebServer.Models.DatabaseModels;
+using KatifiWebServer.Models.SecurityModels;
+using KatifiWebServer.Services;
 
 namespace KatifiWebServer.Data;
 
-public static class DBInitializer
+public class DBInitializer
 {
-    public static void Seed(IApplicationBuilder applicationBuilder)
+
+    public async void Seed(IApplicationBuilder applicationBuilder)
     {
         using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
         {
-            var context = serviceScope.ServiceProvider.GetService<MicrosoftEFContext>();
+            var context = serviceScope.ServiceProvider.GetService<MSEFContext>();
             if (context != null)
             {
                 context.Database.EnsureCreated(); // Adatbázis létrehozása ha még nem létezik
@@ -77,6 +80,25 @@ public static class DBInitializer
                     context.SaveChanges();
                 }
 
+                if (!context.Messes.Any())
+                {
+                    context.Messes.AddRange(new List<Mess>()
+                {
+                    new Mess() {
+                        ChurchId = 50,
+                        Day = "Vasárnap",
+                        StartTime = new TimeOnly(18,00)
+                    },
+                    new Mess() {
+                        ChurchId = 51,
+                        Day = "Vasárnap",
+                        StartTime = new TimeOnly(18,00),
+                        Priest = context.Churches.Single(c => c.Id == 51).Vicar
+                    }
+                });
+                    context.SaveChanges();
+                }
+
                 if (!context.Communities.Any())
                 {
                     context.Communities.AddRange(new List<Community>()
@@ -92,61 +114,6 @@ public static class DBInitializer
                         Name = "Szent Ágoston közzöség",
                         IsOpen = true,
                         AddressId = 338
-                    }
-                });
-                    context.SaveChanges();
-                }
-
-                if (!context.Roles.Any())
-                {
-                    context.Roles.AddRange(new List<Role>()
-                    {
-                        new Role()
-                        {
-                            Name = IdentityRoles.Guest
-                        },
-                        new Role()
-                        {
-                            Name = IdentityRoles.User
-                        },
-                        new Role()
-                        {
-                            Name = IdentityRoles.Admin
-                        }
-                    });
-                    context.SaveChanges();
-                }
-
-                if (!context.Users.Any())
-                {
-                    context.Users.AddRange(new List<User>()
-                {
-                    new User()
-                    {
-                        Username = "pk1",
-                        Password = "passwd01",
-                        Lastname = "Pálfalvi",
-                        FirstName = "Kristóf",
-                        Gender = 'M',
-                        AgreeTerm = true,
-                        BornDate = new DateOnly(1999,7,17),
-                        Email = "palfalvi.kristof@gmail.com",
-                        RegistrationDate = DateTime.Now,
-                        RoleId = (int)IdentityRoles.Admin
-                    },
-                    new User()
-                    {
-                        Username = "pm2",
-                        Password = "passwd02",
-                        Lastname = "Pandur",
-                        FirstName = "Manni",
-                        Gender = 'F',
-                        AgreeTerm = true,
-                        BornDate = new DateOnly(2000,3,31),
-                        RegistrationDate = DateTime.Now,
-                        Email = "misztik2000@gmail.com",
-                        RoleId = (int)IdentityRoles.User,
-                        AddressID = 340
                     }
                 });
                     context.SaveChanges();
@@ -176,22 +143,39 @@ public static class DBInitializer
                     context.SaveChanges();
                 }
 
-                if (!context.Messes.Any())
+                if (!context.Users.Any())
                 {
-                    context.Messes.AddRange(new List<Mess>()
+                    var authservice = serviceScope.ServiceProvider.GetService<IAuthenticationService>();
+                    if (authservice != null)
                     {
-                        new Mess() {
-                            ChurchId = 50,
-                            Day = "Vasárnap",
-                            StartTime = new TimeOnly(18,00),
-                        },
-                        new Mess() {
-                            ChurchId = 51,
-                            Day = "Vasárnap",
-                            StartTime = new TimeOnly(18,00),
-                            Priest = context.Churches.Single(c => c.Id == 51).Vicar}
-                    });
-                    context.SaveChanges();
+                        var Palfalvi_Kristof = new RegisterModel()
+                        {
+                            UserName = "palfalvi_kristof",
+                            Password = "Q-securepassw78",
+                            Lastname = "Pálfalvi",
+                            FirstName = "Kristóf",
+                            Gender = 'M',
+                            BornDate = new DateOnly(1999, 7, 17),
+                            AgreeTerm = true
+                        };
+                        var Mandur_Manni = new RegisterModel()
+                        {
+                            UserName = "mandur_manni",
+                            Password = "Q-ittacicaholacica5",
+                            Lastname = "Pandur",
+                            FirstName = "Manni",
+                            Gender = 'F',
+                            BornDate = new DateOnly(2000, 3, 31),
+                            Email = "misztik2000@gmail.com",
+                            AgreeTerm = true,
+                            AddressID = 340
+
+                        };
+                        var status1 = await authservice.RegisterAdmin(Palfalvi_Kristof);
+                        var status2 = await authservice.RegisterUser(Mandur_Manni);
+
+                        Console.WriteLine("INFO - Users are created!");
+                    }
                 }
 
                 if (!context.Members.Any())
@@ -242,6 +226,7 @@ public static class DBInitializer
                     });
                     context.SaveChanges();
                 }
+
             }
         }
     }
