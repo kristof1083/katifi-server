@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using KatifiWebServer.Models.DatabaseModels;
 using KatifiWebServer.Models.DTOModels;
+using KatifiWebServer.Models.SecurityModels;
 using Microsoft.Build.Framework;
 
 namespace KatifiWebServer.Data;
@@ -21,10 +22,8 @@ public class MapperConfig : Profile
         CreateMap<Community, CommunityDTO>();
         CreateMap<Community, CommunityDTO>().ReverseMap();
 
-        CreateMap<User, UserDTO>()
-            .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Role.Name));
-        CreateMap<User, UserDTO>()
-            .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Role.Name)).ReverseMap();
+        CreateMap<AppUser, UserDTO>();
+        CreateMap<AppUser, UserDTO>().ReverseMap();
 
         CreateMap<Member, MemberDTO>()
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
@@ -40,6 +39,11 @@ public class MapperConfig : Profile
 
         CreateMap<Participant, ParticipantDTO>();
         CreateMap<Participant, ParticipantDTO>().ReverseMap();
+
+
+        //Identity 
+        CreateMap<RegisterModel, AppUser>();
+        CreateMap<RegisterModel, AppUser>().ReverseMap();
 
     }
 }
