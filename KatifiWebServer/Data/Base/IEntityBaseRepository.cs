@@ -23,7 +23,7 @@ namespace KatifiWebServer.Data.Base
 
         Task<bool> EntityExists(int id);
 
-        Task<bool> MeetsTheConstraints(T entity);
+        bool MeetsTheConstraints(T entity);
 
     }
 }

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking; // Az EntityEntry változásokhoz // Az EntityEntry változásokhoz
-using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore.ChangeTracking; // Az EntityEntry változásokhoz
 
 namespace KatifiWebServer.Data.Base
 {
@@ -59,18 +54,18 @@ namespace KatifiWebServer.Data.Base
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> EntityExists(int id)
+        public virtual async Task<bool> EntityExists(int id)
         {
             return await _context.Set<T>().AnyAsync(e => e.Id == id);
         }
 
-        public virtual async Task<bool> MeetsTheConstraints(T entity)
+        public virtual bool MeetsTheConstraints(T entity)
         {
             if(entity != null)
             {
-                return await Task.FromResult(true);
+                return true;
             }
-            return await Task.FromResult(false);
+            return false;
             
             //Have to override
         }
