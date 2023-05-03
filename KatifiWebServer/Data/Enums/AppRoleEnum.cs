@@ -2,5 +2,5 @@
 
 public enum AppRoleEnum
 {
-    Guest, User, Admin
+    User, Vicar, CommunityLeader, EventOrganizer, Admin
 }
