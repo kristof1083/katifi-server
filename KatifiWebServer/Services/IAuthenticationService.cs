@@ -6,12 +6,12 @@ namespace KatifiWebServer.Services
 {
     public interface IAuthenticationService
     {
-        public Task<object> Login(LoginModel model);
+        public Task<string?> Login(LoginModel model);
 
-        public Task<int> RegisterUser(RegisterModel model);
+        public Task<int> RegistUserAsync(RegisterModel model);
 
-        public Task<int> RegisterAdmin(RegisterModel model);
+        public Task<int> RegistAdminAsync(RegisterModel model);
 
-        public JwtSecurityToken GetToken(List<Claim> authClaims);
+        public Task<int> AddRoleToUserAsync(string roleName, string userName);
     }
 }

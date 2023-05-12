@@ -3,7 +3,6 @@ using KatifiWebServer.Data.Enums;
 using KatifiWebServer.Models.DatabaseModels;
 using KatifiWebServer.Models.SecurityModels;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -26,51 +25,43 @@ namespace KatifiWebServer.Services
             _mapper = mapper;
         }
 
-        public JwtSecurityToken GetToken(List<Claim> authClaims)
+        public async Task<string?> Login(LoginModel model)
         {
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+            var user = GetUserAsny(model).Result;
+            if (user == null)
+                return null;
 
-            var token = new JwtSecurityToken(
-                issuer: _configuration["JWT:ValidIssuer"],
-                audience: _configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddHours(3),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                );
+            var userRoles = await _userManager.GetRolesAsync(user);
 
-            return token;
+           var authClaims = new List<Claim>
+           {
+               new Claim(ClaimTypes.Name, user.UserName),
+               new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+           };
+
+           foreach (var userRole in userRoles)
+           {
+                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+           }
+
+           var token = GetToken(authClaims);
+
+           return new JwtSecurityTokenHandler().WriteToken(token); // The new token
         }
 
-        public async Task<object> Login(LoginModel model)
+        public async Task<AppUser?> GetUserAsny(LoginModel model)
         {
+            if (string.IsNullOrWhiteSpace(model.Username) || string.IsNullOrWhiteSpace(model.Password))
+                return null;
+
             var user = await _userManager.FindByNameAsync(model.Username);
-            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
-            {
-                var userRoles = await _userManager.GetRolesAsync(user);
+            if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
+                return null;
 
-                var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
-
-                foreach (var userRole in userRoles)
-                {
-                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-                }
-
-                var token = GetToken(authClaims);
-
-                return new
-                {
-                    token = new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration = token.ValidTo
-                };
-            }
-            return null;
+            return user;
         }
 
-        public async Task<int> RegisterUser(RegisterModel model)
+        public async Task<int> RegistUserAsync(RegisterModel model)
         {
             if (!HasValidProperties(model))
                 return -1;
@@ -96,7 +87,7 @@ namespace KatifiWebServer.Services
             return 0;
         }
 
-        public async Task<int> RegisterAdmin(RegisterModel model)
+        public async Task<int> RegistAdminAsync(RegisterModel model)
         {
             if (!HasValidProperties(model))
                 return -1;
@@ -113,18 +104,54 @@ namespace KatifiWebServer.Services
             if (!result.Succeeded)
                 return -3;
 
-            if (!await _roleManager.RoleExistsAsync(AppRoleEnum.Admin.ToString()))
-                await _roleManager.CreateAsync(new AppRole { Name = AppRoleEnum.Admin.ToString() });
-            if (!await _roleManager.RoleExistsAsync(AppRoleEnum.User.ToString()))
-                await _roleManager.CreateAsync(new AppRole{ Name = AppRoleEnum.User.ToString() });
+            foreach(string roleName in Enum.GetNames(typeof(AppRoleEnum)))
+            {
+                if (!await _roleManager.RoleExistsAsync(roleName))
+                    await _roleManager.CreateAsync(new AppRole { Name = roleName });
 
-            await _userManager.AddToRoleAsync(user, AppRoleEnum.Admin.ToString());
-            await _userManager.AddToRoleAsync(user, AppRoleEnum.User.ToString());
+                await _userManager.AddToRoleAsync(user, roleName);
+            }
             
             return 0;
         }
 
-        private bool HasValidProperties(RegisterModel user)
+        public async Task<int> AddRoleToUserAsync(string roleName, string userName)
+        {
+            if (!Enum.IsDefined(typeof(AppRoleEnum), roleName))
+                return -1;
+
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+                return -2;
+
+            if (!await _roleManager.RoleExistsAsync(roleName))
+                await _roleManager.CreateAsync(new AppRole { Name = roleName });
+
+            var result = await _userManager.AddToRoleAsync(user, roleName);
+            if (!result.Succeeded)
+                return -3;
+
+            return 0;
+        }
+
+
+        private JwtSecurityToken GetToken(List<Claim> authClaims)
+        {
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["JWT:ValidIssuer"],
+                audience: _configuration["JWT:ValidAudience"],
+                expires: DateTime.Now.AddHours(12),
+                notBefore: DateTime.Now,
+                claims: authClaims,
+                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                );
+
+            return token;
+        }
+
+        private static bool HasValidProperties(RegisterModel user)
         {
             if(user != null)
             {
