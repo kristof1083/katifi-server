@@ -1,4 +1,5 @@
-﻿using KatifiWebServer.Data.Base;
+﻿using AutoMapper.Execution;
+using KatifiWebServer.Data.Base;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,7 +17,7 @@ public class Community : IEntityBase
     public bool IsOpen { get; set; }
 
     [NotMapped]
-    public int CommunityMemberCount { get => Members.Count; }
+    public int MemberCount { get => Members == null ? 0 : Members.Count; }
 
 
     //Relations

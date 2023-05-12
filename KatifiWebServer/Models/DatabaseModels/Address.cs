@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using KatifiWebServer.Data.Base;
 
@@ -30,7 +29,8 @@ public class Address : IEntityBase
 
 
     //Relations
-    public List<AppUser> Users { get; set; }
-    public List<Community> Communities { get; set; }
-    public Church Church { get; set; }
+    public List<AppUser>? Users { get; set; }
+    public List<Community>? Communities { get; set; }
+    public Church? Church { get; set; }
+    public List<Event>? Events { get; set; }
 }

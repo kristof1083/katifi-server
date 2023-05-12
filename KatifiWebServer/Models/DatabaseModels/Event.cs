@@ -32,12 +32,16 @@ public class Event : IEntityBase
 
 
     [Display(Name = "Kép mappa url"), NotMapped]
-    public string PictureFolderUrl => Name + "_" + DateOnly.FromDateTime(Date).ToString();
+    public string PictureFolderUrl => Name + "_" + Date.Date.ToString();
 
     [NotMapped]
-    public int ParticipantCount { get => Participants.Count; }
+    public int ParticipantCount { get => Participants == null ? 0 : Participants.Count; }
 
 
     //Relations
+
+    [Required, ForeignKey("Address")]
+    public int AddressId { get; set; }
+    public Address Address { get; set; }
     public List<Participant> Participants { get; set; }
 }

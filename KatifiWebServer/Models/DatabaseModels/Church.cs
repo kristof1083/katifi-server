@@ -18,7 +18,7 @@ public class Church : IEntityBase
 
     //Relations
     [Required, ForeignKey("Address")]
-    public int AdressId { get; set; }
+    public int AddressId { get; set; }
     public Address Address { get; set; }
 
     public List<Mess> Messes { get; set; }

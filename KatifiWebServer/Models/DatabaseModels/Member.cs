@@ -2,7 +2,6 @@
 using KatifiWebServer.Data.Base;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 
 namespace KatifiWebServer.Models.DatabaseModels;
 public class Member : IEntityBase
@@ -10,8 +9,8 @@ public class Member : IEntityBase
     [Key]
     public int Id { get; set; }
 
-    [Required, Column(TypeName = "nvarchar(24)"), Display(Name = "Tagsági státusz")]
-    public MemberStatus Status { get; set; }
+    [Required, Display(Name = "Tagsági státusz")]
+    public string Status { get; set; }
 
     [Required, Display(Name = "Csatlakozás dátuma")]
     public DateTime JoinDate { get; set; }
