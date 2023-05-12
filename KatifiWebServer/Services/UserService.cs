@@ -1,6 +1,7 @@
 ﻿using KatifiWebServer.Data;
 using KatifiWebServer.Data.Base;
 using KatifiWebServer.Models.DatabaseModels;
+using KatifiWebServer.Models.DTOModels;
 
 namespace KatifiWebServer.Services
 {
@@ -10,15 +11,15 @@ namespace KatifiWebServer.Services
         {
         }
 
-        public override async Task<bool> MeetsTheConstraints(AppUser user)
+        public override bool MeetsTheConstraints(AppUser user)
         {
-            bool basebool = await base.MeetsTheConstraints(user);
+            bool basebool = base.MeetsTheConstraints(user);
             if (basebool && user.AgreeTerm == true && user.UserName != null && user.PasswordHash != null && user.FullName != null
                  && user.BornDatetime != DateTime.MinValue && (user.Gender == 'F' || user.Gender == 'M'))
             {
-                return await Task.FromResult(true);
+                return true;
             }
-            return await Task.FromResult(false);
+            return false;
         }
     }
 }
