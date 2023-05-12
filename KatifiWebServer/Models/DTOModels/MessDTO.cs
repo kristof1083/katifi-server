@@ -11,5 +11,6 @@
 
         public string? Priest { get; set; }
 
+        public int ChurchId { get; set; }
     }
 }

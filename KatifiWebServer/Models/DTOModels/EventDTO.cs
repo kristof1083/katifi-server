@@ -6,8 +6,10 @@ public class EventDTO
     public string Name { get; set; }
     public DateTime Date { get; set; }
     public DateTime RegistrationDeadline { get; set; }
+    public int Fee { get; set; }
     public string Organizer { get; set; }
     public int? MaxParticipant { get; set; }
 
-    public List<ParticipantDTO> Participants { get; set; }
+    public AddressDTO Address { get; set; }
+    public int ParticipantCount { get; set; }
 }

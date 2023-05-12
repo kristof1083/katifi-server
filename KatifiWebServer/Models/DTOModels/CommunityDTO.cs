@@ -8,6 +8,6 @@ public class CommunityDTO
 
     public AddressDTO Address { get; set; }
 
-    public List<MemberDTO> Members { get; set; }
+    public int MemberCount { get; set; }
 
 }

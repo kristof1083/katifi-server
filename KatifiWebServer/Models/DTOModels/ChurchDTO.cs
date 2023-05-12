@@ -6,5 +6,4 @@ public class ChurchDTO
     public string Name { get; set; }
     public string? Vicar { get; set; }
     public AddressDTO Address { get; set; }
-    public List<MessDTO> Messes { get; set; }
 }

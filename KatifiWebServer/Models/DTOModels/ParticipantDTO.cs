@@ -4,8 +4,10 @@
     {
         public int Id { get; set; }
         public DateTime ApplicationDate { get; set; }
-        public UserDTO User { get; set; }
+        public string? UserFullName { get; set; }
+        public int UserAge { get; set; }
 
-        public EventDTO Event { get; set; }
+        public int UserId { get; set; }
+        public int EventId { get; set; }
     }
 }
