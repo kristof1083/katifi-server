@@ -22,6 +22,8 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="Resources\ModelImages\" />
+    <Folder Include="Uploads\" />
   </ItemGroup>
 
 </Project>

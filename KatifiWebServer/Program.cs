@@ -2,6 +2,7 @@ using KatifiWebServer.Data;
 using KatifiWebServer.Models.DatabaseModels;
 using KatifiWebServer.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -10,7 +11,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
 
-
+#region Add Various Services
 // Add services to the container.
 builder.Services.AddControllers();
 
@@ -20,12 +21,10 @@ builder.Services.AddDbContext<MicrosoftEFContext>(opt => opt.UseSqlServer(
 builder.Services.AddAutoMapper(typeof(MapperConfig));
 builder.Services.AddScoped<MicrosoftEFContext>();
 
-builder.Services.AddIdentityCore<AppUser>(opt => opt.Password.RequiredLength = 8).AddRoles<AppRole>()
-    .AddEntityFrameworkStores<MicrosoftEFContext>().AddDefaultTokenProviders();
-
-/*builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<MSEFContext>()
-    .AddDefaultTokenProviders();*/
+builder.Services.AddIdentityCore<AppUser>(opt => { opt.Password.RequiredLength = 8; opt.Password.RequireDigit = false;})
+    .AddRoles<AppRole>()
+    .AddDefaultTokenProviders()
+    .AddEntityFrameworkStores<MicrosoftEFContext>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -53,21 +52,28 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICommunityService, CommunityService>();
 builder.Services.AddScoped<IMessService, MessService>();
 builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddScoped<IMemberService, MemberService>();
+builder.Services.AddScoped<IParticipantService, ParticipantService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IImageFileService, ImageFileService>();
 
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo()
     {
         Title = "API testing",
-        Version = "v1"
+        Version = "v2.4"
     });
 });
 
+builder.Services.Configure<FormOptions>(options =>
+{
+    // Set the limit to 128 MB =~ 20-25 photo per upload
+    options.MultipartBodyLengthLimit = configuration.GetValue<long>("FileUploads:FileCollectionSizeLimit");
+});
+#endregion
+
 var app = builder.Build();
-
-
-
 
 IWebHostEnvironment env = app.Services.GetRequiredService<IWebHostEnvironment>();
 if (env.IsDevelopment())
@@ -80,9 +86,11 @@ if (env.IsDevelopment())
     });
 }
 
+#region Initialize Database content
 var initializer = new DBInitializer();
 initializer.Seed(app);
 initializer = null;
+#endregion
 
 app.UseHttpsRedirection();
 
