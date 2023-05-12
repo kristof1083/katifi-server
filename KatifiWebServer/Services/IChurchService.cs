@@ -5,5 +5,6 @@ namespace KatifiWebServer.Services
 {
     public interface IChurchService : IEntityBaseRepository<Church>
     {
+        public Task<IEnumerable<Church>> GetChurchesInCity(string cityName);
     }
 }
