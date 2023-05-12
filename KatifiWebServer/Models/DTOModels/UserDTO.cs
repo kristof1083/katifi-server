@@ -20,7 +20,7 @@
 
         public bool AgreeTerm { get; set; }
 
-        public string UserToken { get; set; }
+        public string? UserToken { get; set; }
 
         public AddressDTO Address { get; set; }
     }

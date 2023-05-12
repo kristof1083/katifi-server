@@ -2,13 +2,15 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using KatifiWebServer.Data.Base;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Identity;
 
 namespace KatifiWebServer.Models.DatabaseModels;
 
 public class AppUser : IdentityUser<int>, IEntityBase
 {
+    [Display(Name = "Felhasználónév"), Required, ProtectedPersonalData]
+    public override string? UserName { get => base.UserName; set => base.UserName = value; }
+
     [Display(Name = "Vezetéknév"), Required, PersonalData]
     public string Lastname { get; set; }
 
@@ -31,16 +33,16 @@ public class AppUser : IdentityUser<int>, IEntityBase
     public DateOnly BornDate { get => DateOnly.FromDateTime(BornDatetime); set => BornDatetime = value.ToDateTime(new TimeOnly(0,0)); }
 
     [Display(Name = "Felhasználó feltételek elfogadása"), Required]
-    public bool AgreeTerm { get; set; }
 
     [NotMapped]
-    public string? UserToken { get; set; }
+    public int Age { get => (int)((DateTime.Now - BornDatetime).TotalDays / 365); }
+    public bool AgreeTerm { get; set; }
 
 
     //Relations
 
     [ForeignKey("Address"), ProtectedPersonalData]
-    public int? AddressID { get; set; }
+    public int? AddressId { get; set; }
     public Address? Address { get; set; }
 
 

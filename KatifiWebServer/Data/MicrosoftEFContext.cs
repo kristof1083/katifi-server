@@ -29,6 +29,7 @@ namespace KatifiWebServer.Data
             modelBuilder.Entity<Participant>().Property(p => p.Id).UseIdentityColumn(seed: 8305, increment: 1);
             modelBuilder.Entity<AppRole>().Property(p => p.Id).UseIdentityColumn(seed: 20, increment: 3);
             modelBuilder.Entity<AppUser>().Property(p => p.Id).UseIdentityColumn(seed: 5170, increment: 1);
+            modelBuilder.Entity<AppUser>().HasAlternateKey(p => p.UserName);
             //Mess starting id not required
             base.OnModelCreating(modelBuilder);
         }
