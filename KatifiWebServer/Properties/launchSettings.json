@@ -39,9 +39,10 @@
     },
     "devtunnel": {
       "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "swagger",
-      "applicationUrl": "https://zr4jwc3b-7077.euw.devtunnels.ms",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "launchUrl": "katifiserver",
+      "applicationUrl": "https://zr4jwc3b-443.euw.devtunnels.ms",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
