@@ -2,6 +2,7 @@
 using KatifiWebServer.Models.DatabaseModels;
 using KatifiWebServer.Models.SecurityModels;
 using KatifiWebServer.Services;
+using System.Security.Authentication;
 
 namespace KatifiWebServer.Data;
 
@@ -12,7 +13,7 @@ public class DBInitializer
     {
         using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
         {
-            var context = serviceScope.ServiceProvider.GetService<MSEFContext>();
+            var context = serviceScope.ServiceProvider.GetService<MicrosoftEFContext>();
             if (context != null)
             {
                 context.Database.EnsureCreated(); // Adatbázis létrehozása ha még nem létezik
@@ -56,6 +57,27 @@ public class DBInitializer
                         City = "Pécs",
                         Street = "Zsolnay Vilmos utca",
                         HouseNumber = 92
+                    },
+                    new Address()
+                    {
+                        CountryCode = "HU",
+                        County = "Baranya",
+                        PostCode = 7621,
+                        City = "Pécs",
+                        Street = "Dóm tér",
+                        HouseNumber = 3
+                    },
+                    new Address() //id=343
+                    {
+                        CountryCode = "HU",
+                        County = "Baranya",
+                        City = "Máriagyűd"
+                    },
+                    new Address() //id=344
+                    {
+                        CountryCode = "HU",
+                        County = "Baranya",
+                        City = "Pécs"
                     }
                 });
                     context.SaveChanges();
@@ -68,12 +90,12 @@ public class DBInitializer
                         new Church()
                         {
                             Name = "Szent Ágoston templom",
-                            AdressId = 339,
+                            AddressId = 339,
                         },
                         new Church()
                         {
                             Name = "Gyárvárosi templom",
-                            AdressId = 341,
+                            AddressId = 341,
                             Vicar = "Nagy Norbert"
                         }
                     });
@@ -127,9 +149,10 @@ public class DBInitializer
                     {
                         Name = "41. MIT",
                         Date = new DateTime(2023,6,29),
-                        RegistrationDeadline = new DateTime(2023,06,22),
+                        RegistrationDeadline = new DateTime(2023,06,23),
                         Organizer = "KatIfi kis csapata",
-                        Fee = 5500
+                        Fee = 5500,
+                        AddressId = 343
                     },
                     new Event()
                     {
@@ -137,7 +160,8 @@ public class DBInitializer
                         Date = new DateTime(2023,3,15),
                         RegistrationDeadline = new DateTime(2023,03,14),
                         Organizer = "Kopeczky Ábris",
-                        Fee = 0
+                        Fee = 0,
+                        AddressId = 344
                     }
                 });
                     context.SaveChanges();
@@ -158,9 +182,9 @@ public class DBInitializer
                             BornDate = new DateOnly(1999, 7, 17),
                             AgreeTerm = true
                         };
-                        var Mandur_Manni = new RegisterModel()
+                        var Pandur_Manni = new RegisterModel()
                         {
-                            UserName = "mandur_manni",
+                            UserName = "pandur_manni",
                             Password = "Q-ittacicaholacica5",
                             Lastname = "Pandur",
                             FirstName = "Manni",
@@ -171,8 +195,39 @@ public class DBInitializer
                             AddressID = 340
 
                         };
-                        var status1 = await authservice.RegisterAdmin(Palfalvi_Kristof);
-                        var status2 = await authservice.RegisterUser(Mandur_Manni);
+                        var Berecz_Tibi = new RegisterModel()
+                        {
+                            UserName = "bt_bt",
+                            Password = "Q-egyhazmegye1009",
+                            Lastname = "Berecz",
+                            FirstName = "Tibor",
+                            Gender = 'M',
+                            BornDate = new DateOnly(1988, 10, 8),
+                            Email = "berecz.tibor@crnl.hu",
+                            AgreeTerm = true,
+                            AddressID = 342
+
+                        };
+
+                        var status1 = await authservice.RegistAdminAsync(Palfalvi_Kristof);
+                        var status2 = await authservice.RegistUserAsync(Pandur_Manni);
+                        var status3 = await authservice.RegistUserAsync(Berecz_Tibi);
+                        var status21 = await authservice.AddRoleToUserAsync(AppRoleEnum.EventOrganizer.ToString(), Pandur_Manni.UserName);
+                        var status22 = await authservice.AddRoleToUserAsync(AppRoleEnum.CommunityLeader.ToString(), Pandur_Manni.UserName);
+                        var status31 = await authservice.AddRoleToUserAsync(AppRoleEnum.Vicar.ToString(), Berecz_Tibi.UserName);
+
+                        if (status1 != 0)
+                            throw new Exception(string.Format("User {0} can not be created.", Palfalvi_Kristof.UserName));
+                        if (status2 != 0)
+                            throw new Exception(string.Format("User {0} can not be created.", Pandur_Manni.UserName));
+                        if (status3 != 0)
+                            throw new Exception(string.Format("User {0} can not be created.", Berecz_Tibi.UserName));
+                        if (status21 != 0)
+                            throw new Exception(string.Format("Role {0} can not be assign to User {1}.", AppRoleEnum.EventOrganizer.ToString(), Pandur_Manni.UserName));
+                        if (status22 != 0)
+                            throw new Exception(string.Format("Role {0} can not be assign to User {1}.", AppRoleEnum.CommunityLeader.ToString(), Pandur_Manni.UserName));
+                        if (status31 != 0)
+                            throw new Exception(string.Format("Role {0} can not be assign to User {1}.", AppRoleEnum.Vicar.ToString(), Berecz_Tibi.UserName));
 
                         Console.WriteLine("INFO - Users are created!");
                     }
@@ -185,15 +240,15 @@ public class DBInitializer
                         {
                             new Member()
                             {
-                                Status = MemberStatus.Member,
-                                JoinDate = DateTime.Now,
+                                Status = MemberStatus.Member.ToString(),
+                                JoinDate = DateTime.Now.Date,
                                 CommunityId = 630,
                                 UserId = 5170
                             },
                             new Member()
                             {
-                                Status = MemberStatus.Member,
-                                JoinDate = DateTime.Now,
+                                Status = MemberStatus.Member.ToString(),
+                                JoinDate = DateTime.Now.Date,
                                 CommunityId = 630,
                                 UserId = 5171
                             }
