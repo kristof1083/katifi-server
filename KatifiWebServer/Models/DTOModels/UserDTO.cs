@@ -18,6 +18,8 @@
 
         public string? Email { get; set; }
 
+        public string? ProfileImageUrl { get; set; }
+
         public bool AgreeTerm { get; set; }
 
         public string? UserToken { get; set; }

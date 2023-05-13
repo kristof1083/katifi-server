@@ -1,5 +1,4 @@
-﻿using AutoMapper.Execution;
-using KatifiWebServer.Data.Base;
+﻿using KatifiWebServer.Data.Base;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -15,6 +14,9 @@ public class Community : IEntityBase
 
     [Display(Name = "Nyitott"), Required]
     public bool IsOpen { get; set; }
+
+    [Display(Name = "Kép elérési átvonal")]
+    public string? ImageUrl { get; set; }
 
     [NotMapped]
     public int MemberCount { get => Members == null ? 0 : Members.Count; }

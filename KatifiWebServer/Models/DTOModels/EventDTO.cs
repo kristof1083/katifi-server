@@ -8,6 +8,7 @@ public class EventDTO
     public DateTime RegistrationDeadline { get; set; }
     public int Fee { get; set; }
     public string Organizer { get; set; }
+    public string? ImageUrl { get; set; }
     public int? MaxParticipant { get; set; }
 
     public AddressDTO Address { get; set; }

@@ -27,6 +27,9 @@ public class Event : IEntityBase
     [Display(Name = "Szervező"), Required]
     public string Organizer { get; set; }
 
+    [Display(Name = "Kép elérési átvonal")]
+    public string? ImageUrl { get; set; }
+
     [Display(Name = "Max résztvevők")]
     public int? MaxParticipant { get; set; }
 

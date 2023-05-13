@@ -90,11 +90,13 @@ public class DBInitializer
                         new Church()
                         {
                             Name = "Szent Ágoston templom",
+                            ImageUrl = "https://miserend.hu/kepek/templomok/2017/406371657.jpg",
                             AddressId = 339,
                         },
                         new Church()
                         {
                             Name = "Gyárvárosi templom",
+                            ImageUrl = "https://miserend.hu/kepek/templomok/2049/7391438446.jpg",
                             AddressId = 341,
                             Vicar = "Nagy Norbert"
                         }
@@ -128,6 +130,7 @@ public class DBInitializer
                     new Community()
                     {
                         Name = "Boldog Brenner János Antiochia",
+                        ImageUrl = "https://www.facebook.com/photo/?fbid=5778618715599754&set=p.5778618715599754",
                         IsOpen = false,
                         AddressId = 338
                     },

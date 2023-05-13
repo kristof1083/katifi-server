@@ -15,6 +15,9 @@ public class Church : IEntityBase
     [Display(Name = "Plébános")]
     public string? Vicar { get; set; }
 
+    [Display(Name = "Kép elérési átvonal")]
+    public string? ImageUrl { get; set; }
+
 
     //Relations
     [Required, ForeignKey("Address")]

@@ -20,6 +20,9 @@ public class AppUser : IdentityUser<int>, IEntityBase
     [Display(Name = "Regisztráció dátuma")]
     public DateTime RegistrationDate { get; set; }
 
+    [Display(Name = "Profilkép elérési útvonal")]
+    public string? ProfileImageUrl { get; set; }
+
     [NotMapped]
     public string FullName { get => $"{Lastname} {FirstName}"; }
 
