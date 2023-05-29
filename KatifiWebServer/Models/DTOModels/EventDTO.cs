@@ -4,7 +4,8 @@ public class EventDTO
 {
     public int Id { get; set; }
     public string Name { get; set; }
-    public DateTime Date { get; set; }
+    public DateTime Start { get; set; }
+    public DateTime End { get; set; }
     public DateTime RegistrationDeadline { get; set; }
     public int Fee { get; set; }
     public string Organizer { get; set; }

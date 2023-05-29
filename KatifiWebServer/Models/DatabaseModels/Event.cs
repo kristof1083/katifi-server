@@ -15,8 +15,11 @@ public class Event : IEntityBase
     [Display(Name = "Név"), Required]
     public string Name { get; set; }
 
-    [Display(Name = "Dátum"), Required]
-    public DateTime Date { get; set; }
+    [Display(Name = "Kezdő dátum"), Required]
+    public DateTime Start { get; set; }
+
+    [Display(Name = "Vég dátum"), Required]
+    public DateTime End { get; set; }
 
     [Display(Name = "Regisztrációs határidő"), Required]
     public DateTime RegistrationDeadline { get; set; }
@@ -35,7 +38,7 @@ public class Event : IEntityBase
 
 
     [Display(Name = "Kép mappa url"), NotMapped]
-    public string PictureFolderUrl => Name + "_" + Date.Date.ToString();
+    public string PictureFolderUrl => Name + "_" + Start.Date.ToString();
 
     [NotMapped]
     public int ParticipantCount { get => Participants == null ? 0 : Participants.Count; }

@@ -19,7 +19,7 @@ namespace KatifiWebServer.Services
         {
             bool basebool = base.MeetsTheConstraints(eve);
             if (basebool && !string.IsNullOrWhiteSpace(eve.Name) && !string.IsNullOrWhiteSpace(eve.Organizer) &&
-                eve.Date != DateTime.MinValue && eve.RegistrationDeadline != DateTime.MinValue && eve.Date >= eve.RegistrationDeadline)
+                eve.Start != DateTime.MinValue && eve.RegistrationDeadline != DateTime.MinValue && eve.Start >= eve.RegistrationDeadline && eve.Start <= eve.End)
             {
                 return true;
             }
@@ -42,7 +42,7 @@ namespace KatifiWebServer.Services
             if (filter.LatestEventDate == null || filter.LatestEventDate == DateTime.MinValue)
                 filter.LatestEventDate = DateTime.MaxValue;
 
-            query = query.Where(e => e.Date.Date >= filter.EarliestEventDate.Value.Date && e.Date.Date <= filter.LatestEventDate.Value.Date);
+            query = query.Where(e => e.Start.Date >= filter.EarliestEventDate.Value.Date && e.End.Date <= filter.LatestEventDate.Value.Date);
 
 
             if (!string.IsNullOrWhiteSpace(filter.CountryCode))
@@ -59,7 +59,7 @@ namespace KatifiWebServer.Services
             }
             if (filter.JustActives)
             {
-                query = query.Where(e => e.Date.Date >= DateTime.Now.Date);
+                query = query.Where(e => e.End.Date >= DateTime.Now.Date);
             }
             if (filter.MinimumParticipant > 0)
             {

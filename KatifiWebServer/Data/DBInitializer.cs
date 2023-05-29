@@ -2,7 +2,6 @@
 using KatifiWebServer.Models.DatabaseModels;
 using KatifiWebServer.Models.SecurityModels;
 using KatifiWebServer.Services;
-using System.Security.Authentication;
 
 namespace KatifiWebServer.Data;
 
@@ -78,6 +77,12 @@ public class DBInitializer
                         CountryCode = "HU",
                         County = "Baranya",
                         City = "Pécs"
+                    },
+                    new Address() //id=345
+                    {
+                        CountryCode = "HU",
+                        County = "Baranya",
+                        City = "Orfű"
                     }
                 });
                     context.SaveChanges();
@@ -130,7 +135,6 @@ public class DBInitializer
                     new Community()
                     {
                         Name = "Boldog Brenner János Antiochia",
-                        ImageUrl = "https://www.facebook.com/photo/?fbid=5778618715599754&set=p.5778618715599754",
                         IsOpen = false,
                         AddressId = 338
                     },
@@ -151,20 +155,46 @@ public class DBInitializer
                     new Event()
                     {
                         Name = "41. MIT",
-                        Date = new DateTime(2023,6,29),
+                        Start = new DateTime(2023,6,29),
+                        End = new DateTime(2023,7,2),
                         RegistrationDeadline = new DateTime(2023,06,23),
                         Organizer = "KatIfi kis csapata",
+                        ImageUrl = "https://pecsiegyhazmegye.hu/images/40MIT_17.jpg",
                         Fee = 5500,
                         AddressId = 343
                     },
                     new Event()
                     {
                         Name = "Kirándulás",
-                        Date = new DateTime(2023,3,15),
+                        Start = new DateTime(2023,3,15),
+                        End = new DateTime(2023,3,15),
                         RegistrationDeadline = new DateTime(2023,03,14),
                         Organizer = "Kopeczky Ábris",
+                        ImageUrl = "https://img.freepik.com/free-photo/small-stream-forest_23-2147632812.jpg",
                         Fee = 0,
                         AddressId = 344
+                    },
+                    new Event()
+                    {
+                        Name = "Osztálytalálkozó",
+                        Start = new DateTime(2023,4,20),
+                        End = new DateTime(2023,4,21),
+                        RegistrationDeadline = new DateTime(2023,04,20),
+                        Organizer = "Standovár Anna",
+                        ImageUrl = "https://aktivmagyarorszag.hu/wp-content/uploads/2021/02/gyopar-kulcsoshaz-3-scaled.jpg",
+                        Fee = 0,
+                        AddressId = 345
+                    },
+                    new Event()
+                    {
+                        Name = "Évzáró üdülés Orfűn",
+                        Start = new DateTime(2023,6,25),
+                        End = new DateTime(2023,6,27),
+                        RegistrationDeadline = new DateTime(2023,06,18),
+                        Organizer = "Barcza Gellért",
+                        ImageUrl = "https://www.termalfurdo.hu/upload/images/Galeria/furdo/orfu_aquapark/termalfurdo_orfu_aquapark_1.jpg",
+                        Fee = 500,
+                        AddressId = 345
                     }
                 });
                     context.SaveChanges();
@@ -289,3 +319,4 @@ public class DBInitializer
         }
     }
 }
+
