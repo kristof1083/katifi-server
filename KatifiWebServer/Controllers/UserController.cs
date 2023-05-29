@@ -28,14 +28,22 @@ namespace KatifiWebServer.Controllers
         [HttpPost]
         [Route("login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] LoginModel model)
+        public async Task<ActionResult<string>> Login([FromBody] LoginModel model)
         {
             var jwttoken = await _authenticationService.Login(model);
             if (jwttoken == null)
             {
                 return Unauthorized();
             }
-            return Ok(jwttoken);
+            var myUser = await _authenticationService.GetUserAsync(model);
+
+            var loggedInModel = new LoggedInModel
+            {
+                JwtToken = jwttoken,
+                LoggedInUser = _mapper.Map<UserDTO>(myUser)
+            };
+
+            return Ok(loggedInModel);
         }
 
         [HttpGet]
@@ -48,11 +56,11 @@ namespace KatifiWebServer.Controllers
             return Ok(userdtos);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("me")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult<UserDTO>> GetUser(int id)
+        public async Task<ActionResult<UserDTO>> GetMyUser([FromBody] LoginModel model)
         {
-            var user = await _userService.GetByIdAsync(id, u => u.Address);
+            var user = await _authenticationService.GetUserAsync(model);
 
             if (user == null)
             {
@@ -65,7 +73,7 @@ namespace KatifiWebServer.Controllers
         #region Regist users with roles
 
         [HttpPost]
-        [Route("register")]
+        [Route("regist")]
         [AllowAnonymous]
         public async Task<IActionResult> RegistUser([FromBody] RegisterModel model)
         {
@@ -107,9 +115,9 @@ namespace KatifiWebServer.Controllers
         }
 
         [HttpPost]
-        [Route("assign-role")]
+        [Route("assign-role/{roleName}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AssignRoleToUser(string roleName, string userName)
+        public async Task<IActionResult> AssignRoleToUser(string roleName, [FromBody] string userName)
         {
             int status = await _authenticationService.AddRoleToUserAsync(roleName, userName);
             switch (status)
