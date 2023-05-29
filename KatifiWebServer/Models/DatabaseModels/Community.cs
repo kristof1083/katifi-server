@@ -16,7 +16,7 @@ public class Community : IEntityBase
     public bool IsOpen { get; set; }
 
     [Display(Name = "Kép elérési átvonal")]
-    public string? ImageUrl { get; set; }
+    public string? ImageUrl { get; set; } = "https://pixy.org/src/16/164050.png";
 
     [NotMapped]
     public int MemberCount { get => Members == null ? 0 : Members.Count; }
