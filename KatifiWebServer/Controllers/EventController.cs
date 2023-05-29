@@ -5,6 +5,7 @@ using KatifiWebServer.Models.FilterModels;
 using KatifiWebServer.Models.SecurityModels;
 using KatifiWebServer.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KatifiWebServer.Controllers
@@ -170,7 +171,7 @@ namespace KatifiWebServer.Controllers
 
         [HttpPost("{eventId}/regist")]
         [Authorize(Roles = "User")]
-        public async Task<IActionResult> RegistUserForEvent(int eventId, int userId)
+        public async Task<IActionResult> RegistUserForEvent(int eventId, [FromBody] int userId)
         {
             if (!await _eventservice.EntityExists(eventId))
                 return BadRequest("Event or User does not exist.");
@@ -189,7 +190,7 @@ namespace KatifiWebServer.Controllers
             return Ok("Successfully registred."); ;
         }
 
-        [HttpDelete("{evenId}/cancel-registration")]
+        [HttpDelete("{eventId}/cancel-registration")]
         [Authorize(Roles = "User")]
         public async Task<IActionResult> DeleteRegistration(int eventId, int userId)
         {
@@ -204,22 +205,30 @@ namespace KatifiWebServer.Controllers
 
         [HttpPost("{eventId}/upload-photo")]
         [Authorize(Roles = "User")]
-        public async Task<IActionResult> UploadPhotos(int eventId, int userId, [FromForm] IEnumerable<IFormFile> files)
+        public async Task<IActionResult> UploadPhotos(int eventId,[FromForm] int userId, [FromForm] IFormFile file)
         {
             if (!await _participantservice.UserIsRegistred(eventId, userId))
                 return BadRequest("Sorry, you were not registered for this event.");
 
+            /* MULTI FILE CODE
             if (files == null || files.Count() > 20)
                 return BadRequest("Sorry, you are not allowed to upload more than 20 photos.");
-
-            var eventDate = (await _eventservice.GetByIdAsync(eventId)).Date;
+            */
+            var eventDate = (await _eventservice.GetByIdAsync(eventId)).End;
             if(eventDate > DateTime.Now)
-                return BadRequest("Sorry, you can only upload photos to events that were organized in the past.");
+                return BadRequest("Sorry, you can only upload photos after the event.");
 
             long succesSize = 0;
             int successNumber = 0;
             string eventName = (await _eventservice.GetByIdAsync(eventId)).Name;
 
+            var succcess = await _fileService.SaveImageAsync(file, $"EVENT_{eventId}_{eventName}", $"IMG_{userId}");
+            if (succcess)
+            {
+                succesSize += file.Length;
+                successNumber++;
+            }
+            /* - MULTI FILE CODE
             foreach (var formFile in files)
             {
                 var succcess = await _fileService.SaveImageAsync(formFile, $"EVENT_{eventId}_{eventName}", $"IMG_{userId}");
@@ -228,7 +237,7 @@ namespace KatifiWebServer.Controllers
                     succesSize += formFile.Length;
                     successNumber++;
                 }
-            }
+            }*/
 
             if (succesSize == 0)
                 return BadRequest("Can not process any given file.");
