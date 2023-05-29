@@ -1,12 +1,13 @@
-﻿using KatifiWebServer.Models.SecurityModels;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+﻿using KatifiWebServer.Models.DatabaseModels;
+using KatifiWebServer.Models.SecurityModels;
 
 namespace KatifiWebServer.Services
 {
     public interface IAuthenticationService
     {
         public Task<string?> Login(LoginModel model);
+
+        public Task<AppUser?> GetUserAsync(LoginModel model);
 
         public Task<int> RegistUserAsync(RegisterModel model);
 

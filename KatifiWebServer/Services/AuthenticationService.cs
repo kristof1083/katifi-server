@@ -27,7 +27,7 @@ namespace KatifiWebServer.Services
 
         public async Task<string?> Login(LoginModel model)
         {
-            var user = GetUserAsny(model).Result;
+            var user = GetUserAsync(model).Result;
             if (user == null)
                 return null;
 
@@ -49,7 +49,7 @@ namespace KatifiWebServer.Services
            return new JwtSecurityTokenHandler().WriteToken(token); // The new token
         }
 
-        public async Task<AppUser?> GetUserAsny(LoginModel model)
+        public async Task<AppUser?> GetUserAsync(LoginModel model)
         {
             if (string.IsNullOrWhiteSpace(model.Username) || string.IsNullOrWhiteSpace(model.Password))
                 return null;
