@@ -1,9 +1,11 @@
 using KatifiWebServer.Data;
 using KatifiWebServer.Models.DatabaseModels;
 using KatifiWebServer.Services;
+using KatifiWebServer.Services.GoogleServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -56,13 +58,14 @@ builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IParticipantService, ParticipantService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IImageFileService, ImageFileService>();
+builder.Services.AddScoped<IGoogleService, GoogleService>();
 
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo()
     {
         Title = "API testing",
-        Version = "v2.4"
+        Version = "v3.4"
     });
 });
 
