@@ -179,6 +179,17 @@ namespace KatifiWebServer.Controllers
             if (await _participantservice.UserIsRegistred(eventId, userId))
                 return Conflict("User is already registradted to event.");
 
+            var actevent =  await _eventservice.GetByIdAsync(eventId);
+
+            if (DateTime.Now >= actevent.Start)
+                return BadRequest("The event has started. Can not accept application.");
+
+            if (actevent.MaxParticipant is not null)
+            {
+                if (actevent.Participants.Count >= actevent.MaxParticipant)
+                    return BadRequest("Event is full. Registration denied.");
+            }
+
             var participant = new Participant()
             {
                 EventId = eventId,
@@ -198,6 +209,9 @@ namespace KatifiWebServer.Controllers
 
             if (participant == null)
                 return NotFound(new Response { Status = "Error", Message = string.Format("User with id {0} is not registred to event {1}.", userId, eventId) });
+
+            if (DateTime.Now >= participant.Event.Start)
+                return BadRequest("The event has started. Can not accept application canceling.");
 
             await _participantservice.DeleteAsync(participant.Id);
             return NoContent();
