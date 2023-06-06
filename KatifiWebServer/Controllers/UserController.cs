@@ -143,6 +143,13 @@ namespace KatifiWebServer.Controllers
             if (id != user.Id || !await _userService.EntityExists(id) || !_userService.MeetsTheConstraints(user))
                 return BadRequest();
 
+            var existing = await _userService.GetByIdAsync(id);
+
+            user.UserName = existing.UserName;
+            user.AgreeTerm = existing.AgreeTerm;
+            user.Gender = existing.Gender;
+            user.BornDatetime = existing.BornDatetime;
+
             if(user.Address != null && user.AddressId != null)
             {
                 if (!_addressService.MeetsTheConstraints(user.Address))
