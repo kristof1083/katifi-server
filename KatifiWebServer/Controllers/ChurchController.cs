@@ -138,7 +138,7 @@ namespace KatifiWebServer.Controllers
             return Ok(messdtos);
         }
 
-        [HttpPost("{id}/messes/add-mess")]
+        [HttpPost("{id}/messes")]
         public async Task<IActionResult> AddMess(int id, MessDTO messdto)
         {
             if (id != messdto.ChurchId)
@@ -156,7 +156,7 @@ namespace KatifiWebServer.Controllers
             return Ok();
         }
 
-        [HttpDelete("{id}/messes/{messId}/delete-mess")]
+        [HttpDelete("{id}/messes/{messId}")]
         public async Task<IActionResult> DeleteMess(int id, int messId)
         {
             if (!await _messService.EntityExists(messId))

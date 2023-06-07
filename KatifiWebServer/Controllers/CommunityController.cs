@@ -34,7 +34,7 @@ namespace KatifiWebServer.Controllers
         #region Basic CRUD Functions
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<CommunityDTO>>> GetCommunityes()
+        public async Task<ActionResult<IEnumerable<CommunityDTO>>> GetCommunities()
         {
             var communityes = await _communityService.GetAllAsync(c => c.Address, c => c.Members);
             var communitydtos = _mapper.Map<IEnumerable<CommunityDTO>>(communityes);
@@ -58,7 +58,6 @@ namespace KatifiWebServer.Controllers
         }
 
         [HttpPut("{id}")]
-        [AllowAnonymous]
         public async Task<ActionResult<CommunityDTO>> ModifyCommunity(int id, CommunityDTO communitydto)
         {
             var community = _mapper.Map<Community>(communitydto);
