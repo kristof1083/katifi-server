@@ -65,7 +65,7 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo()
     {
         Title = "API testing",
-        Version = "v3.4"
+        Version = "v3.5"
     });
 });
 
